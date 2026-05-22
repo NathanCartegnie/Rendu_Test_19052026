@@ -35,7 +35,7 @@ public class RechercheVilleTest {
 
     @Test
     @DisplayName("Une recherche par début de mot doit retourner les villes correspondantes")
-    void testRechercheParDebut() {
+    void testRechercheParDebut() throws NotFoundException {
         List<String> result = rechercheVille.Rechercher("Va");
         assertEquals(2, result.size());
         assertTrue(result.contains("Valence"));
@@ -44,7 +44,7 @@ public class RechercheVilleTest {
 
     @Test
     @DisplayName("La recherche doit être insensible à la casse")
-    void testRechercheInsensibleCasse() {
+    void testRechercheInsensibleCasse() throws NotFoundException {
         List<String> result = rechercheVille.Rechercher("va");
         assertTrue(result.contains("Valence"));
         assertTrue(result.contains("Vancouver"));
@@ -52,14 +52,14 @@ public class RechercheVilleTest {
 
     @Test
     @DisplayName("La recherche doit fonctionner sur une partie du nom de la ville")
-    void testRecherchePartieDuNom() {
+    void testRecherchePartieDuNom() throws NotFoundException {
         List<String> result = rechercheVille.Rechercher("ape");
         assertTrue(result.contains("Budapest"));
     }
 
     @Test
     @DisplayName("Une recherche avec un astérisque doit retourner toutes les villes")
-    void testAsterisqueRetourneToutesLesVilles() {
+    void testAsterisqueRetourneToutesLesVilles() throws NotFoundException {
         List<String> result = rechercheVille.Rechercher("*");
         assertEquals(16, result.size());
     }

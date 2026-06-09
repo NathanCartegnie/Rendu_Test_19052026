@@ -15,6 +15,7 @@
         <module>exercice2</module>
         <module>exercice5</module>
         <module>exercice6</module>
+        <module>exercice7</module>
     </modules>
 
     <properties>

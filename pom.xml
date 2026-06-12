@@ -16,6 +16,7 @@
         <module>exercice5</module>
         <module>exercice6</module>
         <module>exercice7</module>
+        <module>exercice9</module>
     </modules>
 
     <properties>
@@ -29,6 +30,12 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -55,10 +62,13 @@
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>verify</phase>
+                        <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/site/jacoco</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

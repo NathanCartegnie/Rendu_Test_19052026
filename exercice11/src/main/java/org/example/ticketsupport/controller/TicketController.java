@@ -36,7 +36,7 @@ public class TicketController {
      * GET /api/tickets/{id} -> 200 OK ou 404 Not Found
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
+    public ResponseEntity<Ticket> getTicketById(@PathVariable("id") Long id) {
         Ticket ticket = ticketService.getTicketById(id);
         return ResponseEntity.ok(ticket);
     }
@@ -55,8 +55,10 @@ public class TicketController {
      * PATCH /api/tickets/{id}/status -> 200 OK, 404 Not Found ou 409 Conflict
      */
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Ticket> updateStatus(@PathVariable Long id,
-                                               @Valid @RequestBody UpdateStatusRequest request) {
+    public ResponseEntity<Ticket> updateStatus(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody UpdateStatusRequest request) {
+
         Ticket updated = ticketService.updateStatus(id, request.getStatus());
         return ResponseEntity.ok(updated);
     }

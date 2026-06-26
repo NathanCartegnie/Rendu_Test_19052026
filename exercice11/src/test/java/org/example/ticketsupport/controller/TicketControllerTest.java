@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(TicketController.class)
+@DisplayName("Tests Unitaires du Contrôleur des Tickets")
 class TicketControllerTest {
 
     @Autowired

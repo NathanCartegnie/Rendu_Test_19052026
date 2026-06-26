@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice12</a> &gt; <a href="index.source.html" class="el_package">org.example.meeting.service</a> &gt; <span class="el_source">ReservationService.java</span></div><h1>ReservationService.java</h1><pre class="source lang-java linenums">package org.example.meeting.service;
+
+import org.example.meeting.dto.ReservationCreateRequest;
+import org.example.meeting.exception.BusinessConflictException;
+import org.example.meeting.exception.ResourceNotFoundException;
+import org.example.meeting.model.Reservation;
+import org.example.meeting.repository.ReservationRepository;
+import org.example.meeting.repository.RoomRepository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ReservationService {
+
+    private final ReservationRepository reservationRepository;
+    private final RoomRepository roomRepository;
+
+    public ReservationService(ReservationRepository reservationRepository,
+<span class="fc" id="L18">                              RoomRepository roomRepository) {</span>
+<span class="fc" id="L19">        this.reservationRepository = reservationRepository;</span>
+<span class="fc" id="L20">        this.roomRepository = roomRepository;</span>
+<span class="fc" id="L21">    }</span>
+
+    public Reservation create(ReservationCreateRequest request) {
+<span class="fc" id="L24">        roomRepository.findById(request.getRoomId())</span>
+<span class="fc" id="L25">                .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
+<span class="fc" id="L26">                        &quot;Salle introuvable : id=&quot; + request.getRoomId()));</span>
+
+<span class="pc bpc" id="L28" title="2 of 4 branches missed.">        if (request.getPersonName() == null || request.getPersonName().isBlank()) {</span>
+<span class="nc" id="L29">            throw new IllegalArgumentException(&quot;Le nom de la personne est obligatoire&quot;);</span>
+        }
+
+<span class="pc bpc" id="L32" title="2 of 4 branches missed.">        if (request.getEndDateTime() == null || request.getStartDateTime() == null</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">                || !request.getEndDateTime().isAfter(request.getStartDateTime())) {</span>
+<span class="fc" id="L34">            throw new IllegalArgumentException(</span>
+                    &quot;La date de fin doit être strictement après la date de début&quot;);
+        }
+
+<span class="fc" id="L38">        boolean chevauchement = reservationRepository.findAll().stream()</span>
+<span class="fc" id="L39">                .filter(r -&gt; r.getRoomId().equals(request.getRoomId()))</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                .filter(r -&gt; r.getStatus() == Reservation.Status.CONFIRMED)</span>
+<span class="fc" id="L41">                .anyMatch(r -&gt; overlaps(r, request));</span>
+
+<span class="fc bfc" id="L43" title="All 2 branches covered.">        if (chevauchement) {</span>
+<span class="fc" id="L44">            throw new BusinessConflictException(</span>
+                    &quot;Le créneau chevauche une réservation existante pour cette salle&quot;);
+        }
+
+<span class="fc" id="L48">        Reservation reservation = new Reservation(</span>
+                null,
+<span class="fc" id="L50">                request.getRoomId(),</span>
+<span class="fc" id="L51">                request.getPersonName(),</span>
+<span class="fc" id="L52">                request.getStartDateTime(),</span>
+<span class="fc" id="L53">                request.getEndDateTime()</span>
+        );
+<span class="fc" id="L55">        return reservationRepository.save(reservation);</span>
+    }
+
+    public Reservation getById(Long id) {
+<span class="fc" id="L59">        return reservationRepository.findById(id)</span>
+<span class="pc" id="L60">                .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
+                        &quot;Réservation introuvable : id=&quot; + id));
+    }
+
+    public Reservation cancel(Long id) {
+<span class="fc" id="L65">        Reservation reservation = reservationRepository.findById(id)</span>
+<span class="fc" id="L66">                .orElseThrow(() -&gt; new ResourceNotFoundException(</span>
+                        &quot;Réservation introuvable : id=&quot; + id));
+
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (reservation.getStatus() == Reservation.Status.CANCELLED) {</span>
+<span class="fc" id="L70">            throw new BusinessConflictException(&quot;La réservation est déjà annulée&quot;);</span>
+        }
+
+<span class="fc" id="L73">        reservation.setStatus(Reservation.Status.CANCELLED);</span>
+<span class="fc" id="L74">        return reservation;</span>
+    }
+
+    private boolean overlaps(Reservation existing, ReservationCreateRequest request) {
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">        return request.getStartDateTime().isBefore(existing.getEndDateTime())</span>
+<span class="pc bpc" id="L79" title="1 of 2 branches missed.">                &amp;&amp; request.getEndDateTime().isAfter(existing.getStartDateTime());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

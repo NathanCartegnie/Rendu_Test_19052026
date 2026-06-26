@@ -22,6 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Tests unitaires du service TicketService")
 class TicketServiceTest {
 
     @Mock

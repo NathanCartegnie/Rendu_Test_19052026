@@ -15,9 +15,6 @@ import java.util.Set;
 @Service
 public class TicketService {
 
-    /**
-     * Table des transitions de statut autorisées.
-     */
     private static final Map<TicketStatus, Set<TicketStatus>> ALLOWED_TRANSITIONS = Map.of(
             TicketStatus.OPEN, Set.of(TicketStatus.IN_PROGRESS, TicketStatus.RESOLVED),
             TicketStatus.IN_PROGRESS, Set.of(TicketStatus.RESOLVED),
@@ -30,37 +27,20 @@ public class TicketService {
         this.ticketRepository = ticketRepository;
     }
 
-    /**
-     * Crée un nouveau ticket avec le statut OPEN par défaut.
-     */
     public Ticket createTicket(String title, Priority priority) {
         Ticket ticket = new Ticket(null, title, priority, TicketStatus.OPEN);
         return ticketRepository.save(ticket);
     }
 
-    /**
-     * Récupère un ticket par son identifiant.
-     *
-     * @throws TicketNotFoundException si le ticket n'existe pas
-     */
     public Ticket getTicketById(Long id) {
         return ticketRepository.findById(id)
                 .orElseThrow(() -> new TicketNotFoundException(id));
     }
 
-    /**
-     * Retourne la liste de tous les tickets.
-     */
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
     }
 
-    /**
-     * Met à jour le statut d'un ticket en respectant les transitions autorisées.
-     *
-     * @throws TicketNotFoundException        si le ticket n'existe pas
-     * @throws InvalidStatusTransitionException si la transition demandée est interdite
-     */
     public Ticket updateStatus(Long id, TicketStatus newStatus) {
         Ticket ticket = getTicketById(id);
         TicketStatus currentStatus = ticket.getStatus();

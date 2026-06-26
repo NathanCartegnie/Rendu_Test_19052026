@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("Tests d'intégration de l'API Ticket")
 class TicketApiIntegrationTest {
 
     @Autowired

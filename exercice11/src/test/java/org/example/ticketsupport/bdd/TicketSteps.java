@@ -8,6 +8,7 @@ import org.example.ticketsupport.dto.TicketCreateRequest;
 import org.example.ticketsupport.dto.UpdateStatusRequest;
 import org.example.ticketsupport.model.Priority;
 import org.example.ticketsupport.model.TicketStatus;
+import org.example.ticketsupport.repository.TicketRepository;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,28 +29,23 @@ public class TicketSteps {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private String response;
-    private Long ticketId;
-
     private int lastStatusCode;
     private Long currentTicketId;
 
     @Given("un utilisateur crée un ticket avec le titre {string} et la priorité HIGH")
     public void create_ticket(String title) throws Exception {
 
-        TicketCreateRequest request =
-                new TicketCreateRequest(title, Priority.HIGH);
+        TicketCreateRequest request = new TicketCreateRequest(title, Priority.HIGH);
 
-        response = mockMvc.perform(post("/api/tickets")
+        String response = mockMvc.perform(post("/api/tickets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        ticketId = objectMapper.readTree(response)
-                .get("id")
-                .asLong();
+        currentTicketId = objectMapper.readTree(response).get("id").asLong();
     }
 
     @When("le ticket est créé")
@@ -59,14 +55,14 @@ public class TicketSteps {
 
     @Then("le ticket est enregistré avec le statut OPEN")
     public void check_status_open() throws Exception {
-        mockMvc.perform(get("/api/tickets/" + ticketId))
+        mockMvc.perform(get("/api/tickets/" + currentTicketId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("OPEN"));
     }
 
     @Then("le ticket contient le titre {string}")
     public void check_title(String title) throws Exception {
-        mockMvc.perform(get("/api/tickets/" + ticketId))
+        mockMvc.perform(get("/api/tickets/" + currentTicketId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value(title));
     }
@@ -78,11 +74,10 @@ public class TicketSteps {
 
     @When("le statut du ticket est modifié en RESOLVED")
     public void update_to_resolved() throws Exception {
-
         UpdateStatusRequest request =
                 new UpdateStatusRequest(TicketStatus.RESOLVED);
 
-        mockMvc.perform(patch("/api/tickets/" + ticketId + "/status")
+        mockMvc.perform(patch("/api/tickets/" + currentTicketId + "/status")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
@@ -90,25 +85,15 @@ public class TicketSteps {
 
     @Then("le ticket a le statut RESOLVED")
     public void check_resolved() throws Exception {
-        mockMvc.perform(get("/api/tickets/" + ticketId))
+        mockMvc.perform(get("/api/tickets/" + currentTicketId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("RESOLVED"));
     }
 
     @Given("un ticket existant avec le statut RESOLVED")
     public void existing_ticket_resolved() throws Exception {
-
-        create_ticket("Ticket résolu");
-
-        UpdateStatusRequest request =
-                new UpdateStatusRequest(TicketStatus.RESOLVED);
-
-        mockMvc.perform(patch("/api/tickets/" + ticketId + "/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
-
-        currentTicketId = ticketId;
+        create_ticket("Ticket test");
+        update_to_resolved();
     }
 
     @When("on tente de modifier son statut en IN_PROGRESS")

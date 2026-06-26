@@ -1,0 +1,17 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+exercice12,org.example.meeting.service,RoomService,29,31,3,3,5,7,6,2,3,2
+exercice12,org.example.meeting.service,ReservationService,12,160,6,14,1,33,7,14,1,10
+exercice12,org.example.meeting.repository,RoomRepository,4,48,0,0,1,12,1,5,1,5
+exercice12,org.example.meeting.repository,ReservationRepository,0,52,0,0,0,13,0,6,0,6
+exercice12,org.example.meeting.dto,ReservationCreateRequest,0,31,0,0,0,9,0,9,0,9
+exercice12,org.example.meeting.dto,RoomCreateRequest,0,17,0,0,0,5,0,5,0,5
+exercice12,org.example.meeting.controller,ReservationController,0,28,0,0,0,7,0,4,0,4
+exercice12,org.example.meeting.controller,RoomController,0,21,0,0,0,6,0,3,0,3
+exercice12,org.example.meeting,MeetingRoomApplication,5,3,0,0,2,1,1,1,1,1
+exercice12,org.example.meeting.exception,GlobalExceptionHandler,8,44,0,0,2,10,1,5,1,5
+exercice12,org.example.meeting.exception,BusinessConflictException,0,4,0,0,0,2,0,1,0,1
+exercice12,org.example.meeting.exception,ResourceNotFoundException,0,4,0,0,0,2,0,1,0,1
+exercice12,org.example.meeting.model,Reservation.Status,0,15,0,0,0,3,0,1,0,1
+exercice12,org.example.meeting.model,Reservation,19,47,0,0,5,16,5,9,5,9
+exercice12,org.example.meeting.model,Room,11,25,0,0,3,9,3,5,3,5
+exercice12,org.example,Main,21,0,2,0,5,0,3,0,2,0

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">exercice12</a> &gt; <a href="index.source.html" class="el_package">org.example.meeting.controller</a> &gt; <span class="el_source">ReservationController.java</span></div><h1>ReservationController.java</h1><pre class="source lang-java linenums">package org.example.meeting.controller;
+
+import jakarta.validation.Valid;
+import org.example.meeting.dto.ReservationCreateRequest;
+import org.example.meeting.model.Reservation;
+import org.example.meeting.service.ReservationService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/api/reservations&quot;)
+public class ReservationController {
+
+    private final ReservationService service;
+
+<span class="fc" id="L17">    public ReservationController(ReservationService service) {</span>
+<span class="fc" id="L18">        this.service = service;</span>
+<span class="fc" id="L19">    }</span>
+
+    @PostMapping
+    public ResponseEntity&lt;Reservation&gt; createReservation(
+            @Valid @RequestBody ReservationCreateRequest request) {
+<span class="fc" id="L24">        Reservation created = service.create(request);</span>
+<span class="fc" id="L25">        return ResponseEntity.status(HttpStatus.CREATED).body(created);</span>
+    }
+
+    /**
+     * GET /api/reservations/{id} — Consulte une réservation.
+     * Retourne 404 via GlobalExceptionHandler si introuvable.
+     */
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Reservation&gt; getReservation(@PathVariable(&quot;id&quot;) Long id) {
+<span class="fc" id="L34">        return ResponseEntity.ok(service.getById(id));</span>
+    }
+
+    /**
+     * PATCH /api/reservations/{id}/cancel — Annule une réservation.
+     * Retourne 409 via GlobalExceptionHandler si déjà annulée.
+     */
+    @PatchMapping(&quot;/{id}/cancel&quot;)
+    public ResponseEntity&lt;Reservation&gt; cancelReservation(@PathVariable(&quot;id&quot;) Long id) {
+<span class="fc" id="L43">        return ResponseEntity.ok(service.cancel(id));</span>
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
